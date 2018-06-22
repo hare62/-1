@@ -1,0 +1,129 @@
+table{
+	border-collapse:collapse;
+}
+.window{
+	width: 704px!important;
+	border: 3px solid #a10016;
+	border-radius: 5px;
+	top: 20%;
+	left:50%;
+	margin-left: -400px;
+	padding: 0;
+	z-index: 999;
+}
+.window .window-header{
+	width: 704px!important;
+	padding: 0;
+	height: 45px;
+	overflow: hidden;
+	background: #d40227;
+}
+.panel-title{
+	width: 660px;
+	height: 45px;
+	line-height: 45px;
+	text-indent: 25px;
+	color: #fff;
+	font-size: 22px;
+	font-family: 'microsoft yahei';
+	font-weight: normal;
+	overflow: hidden;
+	float: left;
+}
+.panel-title .bgwhite{
+	width: 102px;
+	height: 39px;
+	display: block;
+	background: #fff;
+	font-size: 20px;
+	color: #be0012;
+	font-family: 'microsoft yahei';
+	text-align: center;
+	text-indent: 0;
+	text-shadow: 0 0 0 #be0012;
+	margin: 6px 0 0 16px;
+	-moz-box-shadow:0px 3px 5px #999 inset;              /* For Firefox3.6+ */
+	-webkit-box-shadow:0px 3px 5px #999 inset;				 /* For Chrome5+, Safari5+ */
+	box-shadow: 0px 3px 5px #999 inset;
+}
+/*关闭按钮*/
+.window .window-header .panel-tool{
+	width: 31px;
+	height: 31px;
+	margin: 7px 10px 7px 3px;
+	float: left;
+}
+.panel .panel-tool-close{
+	width: 31px;
+	height: 31px;
+	display:block;
+	float:right;
+	background: url(//css.yesmyimg.com/web/20160613/newWeb/images/btn-close.png) no-repeat;
+	opacity: 1;
+}
+
+
+#sitesSelector{
+	width: 664px!important;
+	height: auto !important;
+	margin:20px auto;
+	overflow: hidden;
+}
+#sitesSelector .text_t{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	margin:0;
+	padding: 0;
+	font-size: 14px;
+	color: #be0122;
+	font-weight: bold;
+}
+.window-shadow{
+	display:none !important;
+}
+#sitesSelector div{
+	width: 664px !important;
+}
+#sitePanel{
+	width: 664px;
+	text-align: center;
+	font-size: 12px;
+	border: 1px solid #d3d1d1;
+}
+#sitePanel tbody tr{
+	border-bottom:1px solid #d3d1d1;
+}
+#sitePanel tr:nth-child(1){
+	height: 57px;
+	background: #fff3f3;
+	font-size: 14px;
+	letter-spacing: 2px;
+	line-height: 18px;
+	color: #333;
+}
+#sitePanel td,#sitePanel th{
+	height: 50px;
+	border-right:1px solid #d3d1d1;
+}
+#sitePanel tr td:last-child,#sitePanel tr th:last-child{
+	border-right: none;
+}
+#sitesSelector .submit{
+	width: 145px;
+	height: 30px;
+	border: none;
+	background: #e10000;
+	margin:42px auto 35px;
+	display:block;
+	font-size: 18px;
+	color: #fff;
+	border-radius: 3px;
+	text-shadow: 0 0 0 #fff;
+	font-family: 'microsoft yahei';
+}
+
+.demo--label{margin:0 auto;;display:inline-block}
+.demo--radio{display:none}
+.demo--radioInput{background: url(//css.yesmyimg.com/web/20160613/newWeb/images/radio.png) no-repeat;display:inline-block;height:14px;margin:0 auto;margin-top:-1px;vertical-align:middle;width:14px;line-height:1}
+.demo--radio:checked + .demo--radioInput:after{background: url(//css.yesmyimg.com/web/20160613/newWeb/images/radio_on.png) no-repeat;content:"";display:inline-block;height:14px;width:14px} 

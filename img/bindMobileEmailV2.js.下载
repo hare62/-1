@@ -1,0 +1,397 @@
+function hideValidate() {
+	$("#mobile").attr("readonly", "readonly");
+	$("#validateHref").attr("disabled", "disabled");
+	$("#validateHref").removeClass("btn9");
+	$("#validateHref").addClass("btn8");
+	nowtime = new Date().getTime();
+	endtime = nowtime + 60000;
+	_fresh();
+	sh = setInterval(_fresh, 1000);
+}
+function showValidate() {
+	$("#mobile").removeAttr("readonly");
+	$("#validateHref").removeAttr("disabled");
+	$("#validateHref").removeClass("btn8");
+	$("#validateHref").addClass("btn9");
+	document.getElementById("validateHref").setAttribute("onclick", "getSendValidateCode();");
+	clearInterval(sh);
+}
+var nowtime;
+var sh;
+var endtime;
+function _fresh() {
+	nowtime = nowtime + 1000;
+
+	var leftsecond = parseInt((endtime - nowtime) / 1000);
+	__d = parseInt(leftsecond / 3600 / 24);
+	__h = parseInt((leftsecond / 3600) % 24);
+	__m = parseInt((leftsecond / 60) % 60);
+	__s = parseInt(leftsecond);
+
+	if (leftsecond == -1) {
+		showValidate();
+	} else {
+		document.getElementById("secondId").innerHTML = __s;
+	}
+}
+
+/**
+ * 更换绑定新手机
+ */
+function changeModel(id){
+$("#bindedId"+id).hide();
+$("#nobindedId"+id).show();
+}
+
+
+function showValidate2() {
+	$("#email").removeAttr("readonly");
+	$("#validateEmailHref").removeAttr("disabled");
+	$("#validateEmailHref").removeClass("btn8");
+	$("#validateEmailHref").addClass("btn9");
+	clearInterval(sh2);
+}
+function hideValidate2() {
+	$("#email").attr("readonly", "readonly");
+	$("#validateEmailHref").attr("disabled", "disabled");
+	$("#validateEmailHref").removeClass("btn9");
+	$("#validateEmailHref").addClass("btn8");
+	nowtime2 = new Date().getTime();
+	endtime2 = nowtime2 + 60000;
+	_fresh2();
+	sh2 = setInterval(_fresh2, 1000);
+}
+var nowtime2;
+var sh2;
+var endtime2;
+function _fresh2() {
+	nowtime2 = nowtime2 + 1000;
+
+	var leftsecond=parseInt((endtime2-nowtime2)/1000);
+    __d=parseInt(leftsecond/3600/24);
+    __h=parseInt((leftsecond/3600)%24);
+    __m=parseInt((leftsecond/60)%60);
+    __s=parseInt(leftsecond);
+
+	if (leftsecond==-1) {
+		showValidate2();
+	} else {
+		document.getElementById("secondId2").innerHTML = __s;
+	}
+}
+
+function cancelBing(type){
+	var msg = "您确认取消绑定手机吗？";
+	if(type=="2"){
+		msg = "您确认取消绑定邮箱吗？";
+	}
+	if(confirm(msg)){
+		window.location.href="/personalCenter/cancelBindMobileEmail.jspa?type="+type;
+	}
+	
+}
+
+function openPayProtectedSure(){
+	$.ajax({
+		  type: "POST",
+		  url: "/personalCenter/openPayProtected.jspa",
+		  data: { payPassword: $("#payPassword").val(),isclose : $("#payPassword").attr("data-isclose")},
+		  success: function(result){
+			  if(result.flag == 1){
+				  $("#openPayProtectedTip").html(result.msg);
+			  } else {
+				  if(result.other == 'isclose'){
+					  $("#openPayProtectedTip").html(result.msg);
+					  $("#payPassword,#payPasswordLabel").css('visibility', 'hidden');
+					  $("#payPaswordSure").click(function(){
+						  YM.util.dialog.close();
+						  window.location.reload(); 
+					  });
+				  } else {
+					  YM.util.dialog.close();
+					  window.location.reload(); 
+				  }
+			  }
+		  }
+	});
+}
+
+var BIND= 
+{
+		page:{
+			member:{
+				openDialogAjax:function(title,toUrl,width,height){
+					var url='/personalCenter/inc/bind_mobile.jsp?toUrlName='+toUrl+"&title="+encodeURI(title);
+					$.ajax({
+						type : "POST",
+						url : "/personalCenter/ajaxIsBindMobile.jspa",
+						dataType : 'json',
+						success : function(json) {
+							if (json.flag == '0') {
+								YM.page.dialog.ajax({title: '绑定手机',url:url ,width: 500});
+							} else {
+								if(toUrl=='bindMobile'){
+									window.location.href = window.location.href;
+								}else{
+									YM.util.dialog.pop({title: title,url: toUrl,width: width,height:height});
+								}
+							}
+						}
+					});
+				},
+				bindMobileSuccessNext:function()
+				{
+					 var title = $.trim($("#title").val());
+						var toUrlName = $.trim($("#toUrlName").val());
+						YM.util.dialog.close();
+						//parent.YM.page.closeDialog();
+						if(toUrlName!='bindMobile'){
+							YM.page.dialog.ajax({title:title,url:toUrlName,width: 500});
+						}else{
+							window.location.href = window.location.href;
+						}
+				},openPayProtected:function(){
+					YM.page.dialog.ajax({title: '抵扣保护',url: '/personalCenter/openPayProtected.jspa',width: 500});
+				},closePayProtected:function(){
+					YM.page.dialog.ajax({title: '关闭抵扣保护',url: '/personalCenter/openPayProtectedForm.jspa?isclose=1',width: 550});
+				},updateBindGoto:function(mobile,title,toUrl){
+					var url='/personalCenter/inc/update_bind_mobile.jsp?mobile='+mobile+"&toUrl="+toUrl+"&title="+encodeURI(title);
+					YM.page.dialog.ajax({title: title,url: url,width: 500});
+				},
+				 setAccountSecurity:function(title,toUrl,callback){
+					 	if (callback) {
+						    successCallback = callback;
+					 	} else {
+					 		successCallback = '';
+					 	}
+						var url='/personalCenter/inc/bind_mobile.jsp?toUrlName='+toUrl+"&title="+encodeURI(title);
+						$.ajax({
+							type : "POST",
+							url : "/personalCenter/ajaxIsBindMobile.jspa",
+							dataType : 'json',
+							success : function(json) {
+								if (json.flag == '0') {
+									YM.page.dialog.ajax({title: '绑定手机',url:url ,width: 500});
+								} else {
+									if(toUrl=='bindMobile'){
+										window.location.href = window.location.href;
+									}else{
+										YM.page.dialog.ajax({title: title,url: toUrl,width: 500});
+									}
+								}
+							}
+						});
+					},
+				/**
+				 * 发送Email验证
+				 */
+				 sendEmailValidate:function(){
+					$("#validateEmailHref").attr("disabled", "disabled");
+					$("#validateEmailHref").removeClass("btn8");
+					$("#validateEmailHref").addClass("btn9");
+					var email = $("#email").val();
+					if(email==null||email==""||!isEmail(email)){
+						$("#validateEmailHref").removeAttr("disabled");
+						$("#validateEmailHref").removeClass("btn9");
+						$("#validateEmailHref").addClass("btn8");
+						//$("#error2").hide();
+						//$("#error3").show();
+						$("#error1").html("<span class='warn-error'>您输入的邮箱有误，请核对后重新输入！</span>");
+						return;
+					}
+					var oldValidateCode = $("#oldValidateCode").val().trim();
+					$.ajax({
+						type : "POST",
+						url : "/personalCenter/sendValidateCodeEmail.jspa",
+						dataType : 'json',
+						data : "email=" + email+"&oldValidateCode="+oldValidateCode,
+						success : function(json) {
+							if (json.flag == '0') {
+								$("#error1").html("<span class='warn-error'>"+json.msg+"</span>");
+								$("#validateEmailHref").removeAttr("disabled");
+								$("#validateEmailHref").removeClass("btn9");
+								$("#validateEmailHref").addClass("btn8");
+							} else {
+								$("#sendEmailDiv").hide();
+								$("#successDiv").show();
+								$("#emailA").attr("href",'mailto:' + email);
+								$("#emailA").text(email);
+								/*$("#error1").html('校验邮件已发出，请注意查收邮件，如果没有收到，您可以在<b id="secondId2" color="red">60</b>秒后要求系统重新发送。');
+								hideValidate2();*/
+							}
+						}
+					});
+				},
+				/**
+				 * 输入验证码，进行验证
+				 */
+				codeValidated : 0,
+				validateCode2:function() {
+						if (BIND.page.member.codeValidated == 1) {
+							return;
+						}
+						BIND.page.member.codeValidated = 1;
+						var mobile = $.trim($("#mobile").val());
+						if (mobile == "" || !isMobile(mobile)) {
+							$("#error").html("<span class='warn-error'>请先输入正确的手机号码</span>");
+							BIND.page.member.codeValidated = 0;
+							return;
+						}
+						//var validateCode = document.getElementById("validateCode").value.trim();
+						//var validateCode1 = $.trim($("#validateCode").val());
+						//alert(validateCode+"////"+validateCode.trim()+"*****"+$("#validateCode").val()+"+++++"+validateCode1);
+						var validateCode=$("#validateCode").val().trim();
+						if (validateCode == "") {
+							$("#error").html("<span class='warn-error'>您输入的验证码错误！请重新输入！</span>");
+							BIND.page.member.codeValidated = 0;
+							return;
+						}
+						var oldValidateCode = $("#oldValidateCode").val().trim();
+						
+						$.ajax({
+							type : "POST",
+							url : "/personalCenter/submitValidateCode.jspa",
+							dataType : 'json',
+							data : "mobile=" + mobile + "&validateCode=" + validateCode+"&oldValidateCode=" + oldValidateCode,
+							success : function(json) {
+								if (json.flag == '0') {
+									$("#error").html("<span class='warn-error'>"+json.msg+"</span>");
+								} else {
+										$("#error").html("");
+										$("#lblId").text($.trim($("#mobile").val()));
+										//$("#sendMobileDiv").css("display", "none");
+										//$("#validMobileDiv").css("display", "none");
+										//$("#successDiv").css("display", "");
+										$("#sendMobileDiv").hide();
+										$("#validMobileDiv").hide();
+										$("#successDiv").show();
+								}
+								BIND.page.member.codeValidated = 0;
+							},
+							error : function(msg) {
+								BIND.page.member.codeValidated = 0;
+							}
+						});
+					},
+				/**
+				 * 发送验证码到手机
+				 */
+				validateCodeSent: 0,
+				getSendValidateCode:function() {
+					if (BIND.page.member.validateCodeSent == 1) {
+						return;
+					}
+					BIND.page.member.validateCodeSent = 1;
+					/*$("#validateHref").removeClass("btn9");
+					$("#validateHref").addClass("btn8");*/
+					var mobile =$("#mobile").val().trim();
+					if (mobile == ""
+							|| !isMobile(mobile)) {
+						$("#error1").html("<span class='warn-error'>您的手机号码不正确</span>");
+						BIND.page.member.validateCodeSent = 0;
+						return;
+					}
+					//var mobile = $.trim($("#mobile").val());
+					$.ajax({
+								type : "POST",
+								url : "/personalCenter/sendValidateCode.jspa",
+								dataType : 'json',
+								data : "mobile=" + mobile,
+								success : function(json) {
+									if (json.flag == '0') {	
+										$("#error1").html("<span class='warn-error'>"+json.msg+"</span>");
+									} else {
+										//$("#sendMobileDiv").css("display", "none");
+										//$("#validMobileDiv").css("display", "");
+										$("#sendMobileDiv").hide();
+										$("#validMobileDiv").show();
+										$("#error1").html("");
+										$("#error").html("");
+									}
+									BIND.page.member.validateCodeSent = 0;
+								},
+								error : function(msg) {
+									BIND.page.member.validateCodeSent = 0;
+								}
+							});
+				}
+					,
+					/**
+					 * 发送验证码到原手机（修改用）
+					 */
+					sendValidateCodeToOldMobile:function() {
+						$("#validateHref").removeClass("btn8");
+						$("#validateHref").addClass("btn9");
+						$("#validateHref").attr("disabled","disabled");
+						var mobile = $("#mobile").val().trim();
+						if ($.trim($("#mobile").val()) == ""
+							|| !isMobile($.trim($("#mobile").val()))) {	
+						$("#error").html("<span class='warn-error'>您的手机号码不正确</span>");
+						return;
+						}
+						var mobile = $.trim($("#mobile").val());
+						$.ajax({
+							type : "POST",
+							url : "/personalCenter/sendValidateCode.jspa",
+							dataType : 'json',
+							data : "mobile=" + mobile,
+							success : function(json) {
+								if (json.flag == '0') {
+									$("#error").html("<span class='warn-error'>"+json.msg+"</span>");
+								} else {
+									$("#validateHref").attr("disabled","disabled");
+									$("#sendMessage").html("验证码已发送");
+									//$("#sendMobileDiv").hide();
+									//$("#sendMessage").text("系统已向您的绑定的手机  "+mobile+" 发送了短信验证码 ");
+								}
+							}
+						});
+					}
+		,
+					/**
+					 * 输入验证码，进行验证（修改用）
+					 */
+					validateCode3:function() {
+						var mobile = $("#mobile").val().trim();
+						if (mobile == "" || !isMobile(mobile)) {
+							$("#error").html("<span class='warn-error'>请先输入正确的手机号码</span>");
+							return;
+						}
+						var validateCode = $("#validateCode").val().trim();
+						if (validateCode == "") {
+							$("#error").html("<span class='warn-error'>您输入的验证码错误,请重新输入！</span>");
+							return;
+						}
+						var toUrl = $("#toUrl").val().trim();
+						var title = $("#title").val().trim();
+						$.ajax({
+							type : "POST",
+							url : "/personalCenter/validateValidateCode.jspa",
+							//dataType : 'json',
+							data : "mobile=" + mobile + "&validateCode=" + validateCode,
+							success : function(json) {
+								if (json.flag == '0') {
+									$("#error").html("<span class='warn-error'>"+json.msg+"</span>");
+								} else {
+									if(toUrl=='bindMobile'){
+										YM.page.dialog.ajax({title: '绑定手机',url: '/personalCenter/inc/bind_mobile.jsp?toUrlName=bindMobile&oldValidateCode='+validateCode,width: 500});
+									}else{
+										YM.page.dialog.ajax({title: title,url: toUrl+'?oldValidateCode='+validateCode,width: 500});
+									}
+								}
+							}
+						});
+					}
+		,
+					againInputMobile:function(){
+						//$("#sendMobileDiv").css("display", "");
+						//$("#validMobileDiv").css("display", "none");
+						$("#sendMobileDiv .mobilediv").hide();
+						$("#validMobileDiv").show();
+						$("#error1").html("");
+						$("#error").html("");
+					}
+			}
+		}
+		
+}
